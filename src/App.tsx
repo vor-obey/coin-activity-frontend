@@ -187,7 +187,7 @@ function App() {
             onChange={(e) => handleCheckboxChange(e, "1h")}
             value="checked"
           />
-          Show 1h min timeframe
+          Show 1h timeframe
         </label>
         <div
           className={`${isConnected ? "status-active" : "status-disconnect"}`}
