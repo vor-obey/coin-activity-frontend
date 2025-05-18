@@ -36,6 +36,10 @@ body {
   display: flex;
   justify-content: space-around;
   align-items: center;
+
+  label {
+    cursor: pointer;
+  }
 }
 
 .status-active {
@@ -106,7 +110,7 @@ body {
   flex: 1;
   min-width: 200px;
   max-width: 216px;
-  height: 80px;
+  height: 70px;
   padding: 5px 10px;
   border-left: 1px solid #757575;
   border-bottom: 1px solid #757575;
@@ -114,7 +118,7 @@ body {
 
   position: relative;
 
-  cursor: pointer;
+  cursor: pointer !important;
   transition: 0.3s;
 
   &:hover {

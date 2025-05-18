@@ -94,24 +94,25 @@ function App() {
     };
   }, []);
 
-  const coinEntries = coins
-    ? Object.entries(coins).reduce<
-        [typeof Object.entries, typeof Object.entries]
-      >(
-        (acc, entry) => {
-          const [, coin] = entry;
-          if (coin.change > 0.5) {
-            acc[0].push(entry); // Вверх
-          } else {
-            acc[1].push(entry); // Вниз
-          }
-          return acc;
-        },
-        [[], []],
-      )
-    : [[], []];
-
-  const entriesSortedByChange = [...coinEntries[0], ...coinEntries[1]];
+  // const coinEntries = coins
+  //   ? Object.entries(coins).reduce<
+  //       [typeof Object.entries, typeof Object.entries]
+  //     >(
+  //       (acc, entry) => {
+  //         const [, coin] = entry;
+  //         if (coin.change > 0.5) {
+  //           acc[0].push(entry); // Вверх
+  //         } else {
+  //           acc[1].push(entry); // Вниз
+  //         }
+  //         return acc;
+  //       },
+  //       [[], []],
+  //     )
+  //   : [[], []];
+  //
+  // const entriesSortedByChange = [...coinEntries[0], ...coinEntries[1]];
+  const entriesSortedByChange = coins && Object.entries(coins);
 
   function extractNumber(str: string): number {
     const match = str.match(/\d+/);
@@ -184,17 +185,17 @@ function App() {
           <div
             key={symbol}
             className={`h-16 flex items-center justify-center text-xs font-bold text-white cell ${
-              i === coinEntries.length - 1 ? "lastCell" : ""
+              i === entriesSortedByChange.length - 1 ? "lastCell" : ""
             } `}
             style={{
               background:
-                coin.change >= CHANGE_3_AND_MORE_PERCENT
+                Math.abs(coin.change) >= CHANGE_3_AND_MORE_PERCENT
                   ? "#ff1414"
-                  : coin.change >= CHANGE_2_PERCENT
+                  : Math.abs(coin.change) >= CHANGE_2_PERCENT
                     ? "#bb00fa"
-                    : coin.change >= CHANGE_1_5_PERCENT
+                    : Math.abs(coin.change) >= CHANGE_1_5_PERCENT
                       ? "#17ce00"
-                      : coin.change >= CHANGE_0_5_PERCENT
+                      : Math.abs(coin.change) >= CHANGE_0_5_PERCENT
                         ? "#198500"
                         : "",
             }}
