@@ -23,7 +23,7 @@ function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [coins, setCoins] = useState<any>();
   const [showNavbar, setShowNavbar] = useState(false);
-  const [timeframe, setTimeframe] = useState<"1m" | "3m" | "5m" | "15m">("1m");
+  const [timeframe, setTimeframe] = useState<"1m" | "3m" | "5m" | "15m" | "30m" | "1h">("1m");
   const socketRef = useRef<WebSocket | null>(null);
 
   const handleCheckboxChange = (e: any, frame: any) =>
@@ -109,6 +109,8 @@ function App() {
   function extractNumber(str: string): number {
     if (!str) return 1;
 
+    if (str === "1h") return 60;
+
     const match: any = str.match(/\d+/);
     return parseInt(match[0], 10);
   }
@@ -168,6 +170,24 @@ function App() {
             value="checked"
           />
           Show 15 min timeframe
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={timeframe === "30m"}
+            onChange={(e) => handleCheckboxChange(e, "30m")}
+            value="checked"
+          />
+          Show 30 min timeframe
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={timeframe === "1h"}
+            onChange={(e) => handleCheckboxChange(e, "1h")}
+            value="checked"
+          />
+          Show 1h min timeframe
         </label>
         <div
           className={`${isConnected ? "status-active" : "status-disconnect"}`}
