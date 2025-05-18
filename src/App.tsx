@@ -109,7 +109,7 @@ function App() {
   function extractNumber(str: string): number {
     if (!str) return 1;
 
-    const match = str.match(/\d+/);
+    const match: any = str.match(/\d+/);
     return parseInt(match[0], 10);
   }
 
