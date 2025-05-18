@@ -5,13 +5,6 @@ import { CandleTimer } from "./CandleTimer.tsx";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-function formatNumber(value: number): string {
-  if (value >= 1_000_000_000) return (value / 1_000_000_000).toFixed(1) + "B";
-  if (value >= 1_000_000) return (value / 1_000_000).toFixed(1) + "M";
-  if (value >= 1_000) return (value / 1_000).toFixed(1) + "K";
-  return value.toFixed(2);
-}
-
 const CHANGE_0_5_PERCENT = 0.5; //#198500
 const CHANGE_1_5_PERCENT = 1.5; //#17ce00
 const CHANGE_2_PERCENT = 2; //#bb00fa
@@ -29,12 +22,11 @@ interface CoinData {
 function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [coins, setCoins] = useState<any>();
-  const checkboxRef = useRef<any>(null);
-  // const [isSorted, setIsSorted] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
   const [timeframe, setTimeframe] = useState<"1m" | "3m" | "5m" | "15m">("1m");
   const socketRef = useRef<WebSocket | null>(null);
-  const handleCheckboxChange = (e, frame) =>
+
+  const handleCheckboxChange = (e: any, frame: any) =>
     setTimeframe(e.target.checked ? frame : "1m");
 
   useEffect(() => {
@@ -56,7 +48,7 @@ function App() {
 
     socket.onmessage = (event) => {
       const data: CoinData[] = JSON.parse(event.data);
-      setCoins((prevCoins) => {
+      setCoins((prevCoins: any) => {
         const updatedCoins = { ...prevCoins };
         data.forEach((coin) => {
           updatedCoins[coin.symbol] = coin;
@@ -115,6 +107,8 @@ function App() {
   const entriesSortedByChange = coins && Object.entries(coins);
 
   function extractNumber(str: string): number {
+    if (!str) return 1;
+
     const match = str.match(/\d+/);
     return parseInt(match[0], 10);
   }
@@ -181,7 +175,7 @@ function App() {
       </div>
 
       <div className="cell-container">
-        {entriesSortedByChange?.map(([symbol, coin], i) => (
+        {entriesSortedByChange?.map(([symbol, coin]: any, i: number) => (
           <div
             key={symbol}
             className={`h-16 flex items-center justify-center text-xs font-bold text-white cell ${

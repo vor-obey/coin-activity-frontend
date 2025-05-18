@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface CandleTimerProps {
     intervalMinutes: number; // 1 или 5, например
