@@ -91,11 +91,11 @@ function App() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        setQuery((prev) => prev + e.key);
+        setQuery((prev: any) => prev + e.key);
       }
 
       if (e.key === 'Backspace') {
-        setQuery((prev) => prev.slice(0, -1));
+        setQuery((prev: any) => prev.slice(0, -1));
       }
     };
 
