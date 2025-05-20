@@ -25,6 +25,8 @@ function App() {
   const [showNavbar, setShowNavbar] = useState(false);
   const [timeframe, setTimeframe] = useState<"1m" | "3m" | "5m" | "15m" | "30m" | "1h">("1m");
   const socketRef = useRef<WebSocket | null>(null);
+  const [query, setQuery] = useState<any>('');
+  const timeoutRef = useRef<any>(null);
 
   const handleCheckboxChange = (e: any, frame: any) =>
     setTimeframe(e.target.checked ? frame : "1m");
@@ -85,6 +87,38 @@ function App() {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        setQuery((prev) => prev + e.key);
+      }
+
+      if (e.key === 'Backspace') {
+        setQuery((prev) => prev.slice(0, -1));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    if (query) {
+      timeoutRef.current = setTimeout(() => {
+        setQuery('');
+      }, 10000);
+    }
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [query]);
 
   // const coinEntries = coins
   //   ? Object.entries(coins).reduce<
@@ -195,46 +229,49 @@ function App() {
       </div>
 
       <div className="cell-container">
-        {entriesSortedByChange?.map(([symbol, coin]: any, i: number) => (
-          <div
-            key={symbol}
-            className={`h-16 flex items-center justify-center text-xs font-bold text-white cell ${
-              i === entriesSortedByChange.length - 1 ? "lastCell" : ""
-            } `}
-            style={{
-              background:
-                Math.abs(coin.change) >= CHANGE_3_AND_MORE_PERCENT
-                  ? "#ff1414"
-                  : Math.abs(coin.change) >= CHANGE_2_PERCENT
-                    ? "#bb00fa"
-                    : Math.abs(coin.change) >= CHANGE_1_5_PERCENT
-                      ? "#17ce00"
-                      : Math.abs(coin.change) >= CHANGE_0_5_PERCENT
-                        ? "#198500"
-                        : "",
-            }}
-            onClick={() =>
-              window.open(
-                `https://digash.live/#/app/coins-view/BINANCE_FUTURES/${symbol}`,
-                "_blank",
-              )
-            }
-          >
-            <div className="cell-info-head">
-              <span className="symbol">{symbol}</span>
-              <span className={coin?.isHot ? "hot" : ""}>{coin?.change}%</span>
-            </div>
-            <div className="cell-info">
-              <span>O: {coin.open}</span>
-              <span className={coin.direction === "up" ? "p-high" : "p-low"}>
+        {entriesSortedByChange?.map(([symbol, coin]: any, i: number) => {
+          const isMatch = query && symbol.toLowerCase().includes(query.toLowerCase());
+          return (
+              <div
+                  key={symbol}
+                  className={`h-16 flex items-center justify-center text-xs font-bold text-white cell ${
+                      i === entriesSortedByChange.length - 1 ? "lastCell" : ""
+                  } ${isMatch ? 'matched' : ''} `}
+                  style={{
+                    background:
+                        Math.abs(coin.change) >= CHANGE_3_AND_MORE_PERCENT
+                            ? "#ff1414"
+                            : Math.abs(coin.change) >= CHANGE_2_PERCENT
+                                ? "#bb00fa"
+                                : Math.abs(coin.change) >= CHANGE_1_5_PERCENT
+                                    ? "#17ce00"
+                                    : Math.abs(coin.change) >= CHANGE_0_5_PERCENT
+                                        ? "#198500"
+                                        : "",
+                  }}
+                  onClick={() =>
+                      window.open(
+                          `https://digash.live/#/app/coins-view/BINANCE_FUTURES/${symbol}`,
+                          "_blank",
+                      )
+                  }
+              >
+                <div className="cell-info-head">
+                  <span className="symbol">{symbol}</span>
+                  <span className={coin?.isHot ? "hot" : ""}>{coin?.change}%</span>
+                </div>
+                <div className="cell-info">
+                  <span>O: {coin.open}</span>
+                  <span className={coin.direction === "up" ? "p-high" : "p-low"}>
                 C: {coin.close}
               </span>
-            </div>
-          </div>
-        ))}
+                </div>
+              </div>
+          )
+        })}
       </div>
 
-      <CandleTimer intervalMinutes={extractNumber(timeframe)} />
+      <CandleTimer intervalMinutes={extractNumber(timeframe)}/>
     </div>
   );
 }
