@@ -41,12 +41,12 @@ function App() {
   const handleCheckboxChange = (e: any, frame: any) =>
     setTimeframe(e.target.checked ? frame : "1m");
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      window.location.reload();
-    }, 60 * 5000);
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     window.location.reload();
+  //   }, 60 * 5000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   useEffect(() => {
     const socket = new WebSocket(apiUrl);
